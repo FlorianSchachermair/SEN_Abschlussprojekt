@@ -20,7 +20,7 @@ let newStudent = {firstname:'Florian', lastname:'Schachermair', year:5, classLab
 let newSubject = {label:'FSST'}
 let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2017-03-01'}
 
-addSubject(newSubject)
+addTest(newTest)
 function addClass(addClass){
     let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
     connection.query(sqlQuery, function(error, results, fields){
@@ -49,8 +49,8 @@ function addTest(test){
     let sqlQuery = 'insert into Tests(FID, KID, Datum) values('
     sqlQuery+='(select FID from Faecher where Bezeichnung ="' + test.subject + '"),'
     sqlQuery+= '(select KID from Klassen where Bezeichnung="' + test.classLabel + '" ' 
-    sqlQuery+= 'and Jahrgang=' + student.year +'),'
-    sqlQuery+= test.date + ');'
+    sqlQuery+= 'and Jahrgang=' + test.year +'),'
+    sqlQuery+=  '"' + test.date + '");'
     console.log(sqlQuery)
     connection.query(sqlQuery, function(error, results, fields){
             if(error){

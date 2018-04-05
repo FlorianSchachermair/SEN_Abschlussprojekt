@@ -8,7 +8,7 @@ function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     httpReq.onload = function () {
         if (this.status == 200) {
             responseObj = JSON.parse(this.responseText)
-            showResponseTable(responseObj)
+            showResponse(responseObj)
         } else {
             console.log('Response code ' + this.status)
         }
@@ -19,7 +19,10 @@ function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     httpReq.send()
 }
 
-function showResponseTable(){
+function showResponse(responseObj){
+
+    console.log(responseObj)
+
     /*
     let htmlStr = ''
     htmlStr += '<table> <tr> <th>Name</th> <th>Alter</th> </tr>'

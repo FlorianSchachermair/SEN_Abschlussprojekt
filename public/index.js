@@ -4,7 +4,7 @@ let responseObj
 
 function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     var httpReq = new XMLHttpRequest();
-    httpReq.open("GET", "/api/persons/");
+    httpReq.open("GET", "/notenmanagement/getKlasse/5AHELS");
     httpReq.onload = function () {
         if (this.status == 200) {
             responseObj = JSON.parse(this.responseText)
@@ -34,9 +34,18 @@ function showResponse(responseObj){
             '<td>' + '<button onclick="deletePerson(' + persons[i].id + ')">Löschen</button>' + '</td>' +
             '<td>' + '<button onclick="doChange(this, ' + persons[i].id + ')">Ändern</button>' + '</td>' +
             '</tr>'
-    }
+    */
 
-    htmlStr += '</table>'
-    document.getElementById('para2').innerHTML = htmlStr
+/*
+    getClass({year: 5, label: 'AHELS'})
+
+    function getClass(searchClass){
+        let httpReq = new XMLHttpRequest()
+        httpReq.open('GET', '/notenmanagement/getKlasse/' + searchClass.year + searchClass.label)
+        httpReq.onload = function(){
+            let responseData = this.response
+            console.log(responseData)
+        }
+        httpReq.send()
     */
 }

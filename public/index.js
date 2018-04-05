@@ -1,14 +1,15 @@
 console.log('hallo')
 
-let responseObj
+let responseData
 
 function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getKlasse/5AHELS");
     httpReq.onload = function () {
         if (this.status == 200) {
-            responseObj = JSON.parse(this.responseText)
-            showResponse(responseObj)
+            responseData = JSON.parse(this.responseText)
+            // showResponse(responseData)
+            console.log(responseData)
         } else {
             console.log('Response code ' + this.status)
         }

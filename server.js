@@ -49,6 +49,10 @@ app.get('/notenmanagement/getKlasse/:getClass', function(req, res){
         }
     })
 })
+app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
+    let searchStudent = {firstname: req.params.getStudent.split('%20')[0], lastname: req.params.getStudent.split('%20')[1]}
+    let sqlQuery = 'select * from '
+})
 
 
 
@@ -84,6 +88,19 @@ function addTest(test){
 
 function addSubject(newSubject){
     let sqlQuery = 'insert into Faecher(Bezeichnung) values("' + newSubject.label + '");'
+    connection.query(sqlQuery, function(error, results, fields){
+            if(error){
+                console.log(error)
+                return error
+            }else{
+                return true
+            }
+    })
+}
+function addMark(newMark){
+    let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
+    sqlQuery+='(select SID from Schueler where firstname = "' + newMark.firstname + '" and lastname = "' + newMark.lastname + '")';
+    sqlQuery+=', (select TID from Tests where )'
     connection.query(sqlQuery, function(error, results, fields){
             if(error){
                 console.log(error)

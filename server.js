@@ -8,7 +8,6 @@ app.use(bodyParser.json())
 
 app.listen(3000,function(){
     console.log('server running and listening on port 3000')
-    
 })
 let connection = mysql.createConnection({
     host: 'localhost',
@@ -22,7 +21,7 @@ let newClass = {year:5, label:'AHELS'}
 let newStudent = {firstname:'Florian', lastname:'Schachermair', year:5, classLabel:'AHELS'}
 let newSubject = {label:'FSST'}
 let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2017-03-01'}
-
+//addMark({firstname: 'Florian', lastname:'Schachermair', subject: 'FSST', classLabel:'AHELS', year:5, mark: 2, comment:'-'})
 function addClass(addClass){
     let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
     
@@ -51,7 +50,16 @@ app.get('/notenmanagement/getKlasse/:getClass', function(req, res){
 })
 app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
     let searchStudent = {firstname: req.params.getStudent.split('%20')[0], lastname: req.params.getStudent.split('%20')[1]}
-    let sqlQuery = 'select * from '
+    let sqlQuery = 'select Tests.Datum, Faecher.Bezeichnung, Noten.Note, Noten.Kommentar from (((Schueler join Noten on Schueler.SID = Noten.SID) join Tests on Tests.TID = Noten.TID) join Faecher on Tests.FID = Faecher.FID)'
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.send(error)
+        }else{
+            console.log(results)
+            res.status(200).send(results)
+        }
+    })
 })
 
 
@@ -73,8 +81,7 @@ function addStudent(student){
 function addTest(test){
     let sqlQuery = 'insert into Tests(FID, KID, Datum) values('
     sqlQuery+='(select FID from Faecher where Bezeichnung ="' + test.subject + '"),'
-    sqlQuery+= '(select KID from Klassen where Bezeichnung="' + test.classLabel + '" ' 
-    sqlQuery+= 'and Jahrgang=' + test.year +'),'
+    sqlQuery+= '(' + getClassQuery(test) + '),'
     sqlQuery+=  '"' + test.date + '");'
     connection.query(sqlQuery, function(error, results, fields){
             if(error){
@@ -99,8 +106,12 @@ function addSubject(newSubject){
 }
 function addMark(newMark){
     let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
-    sqlQuery+='(select SID from Schueler where firstname = "' + newMark.firstname + '" and lastname = "' + newMark.lastname + '")';
-    sqlQuery+=', (select TID from Tests where )'
+    sqlQuery+='(select SID from Schueler where Vorname = "' + newMark.firstname + '" and Nachname = "' + newMark.lastname + '")';
+    sqlQuery+=', (select TID from Tests where FID = '
+    sqlQuery+='(select FID from Faecher where Bezeichnung = "' + newMark.subject +'") and KID = '
+    sqlQuery+='(' + getClassQuery(newMark) + '))'
+    sqlQuery+=', ' + newMark.mark + ', "' + newMark.comment + '");'
+    console.log(sqlQuery)
     connection.query(sqlQuery, function(error, results, fields){
             if(error){
                 console.log(error)
@@ -109,4 +120,8 @@ function addMark(newMark){
                 return true
             }
     })
+}
+function getClassQuery(searchClass){
+    let sqlQuery = 'select KID from Klassen where Bezeichnung= "' + searchClass.classLabel + '" and Jahrgang = ' + searchClass.year 
+    return sqlQuery;
 }

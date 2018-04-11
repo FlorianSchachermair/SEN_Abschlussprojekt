@@ -3,3 +3,5 @@ Datenbankname: schachnote
 Passwort: 0jsLgHpA05rWlA25
 Server: web01.energyfussl.at
 Port: 3306
+
+http://web01.energyfussl.at/pma/

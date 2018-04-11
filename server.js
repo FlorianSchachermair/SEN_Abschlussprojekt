@@ -10,10 +10,10 @@ app.listen(3000,function(){
     console.log('server running and listening on port 3000')
 })
 let connection = mysql.createConnection({
-    host: 'web02.energyfussl.at',
-    user: 'lfrie_schachnote',
-    password: 'Qeyv%604',
-    database: 'lfriedl_schachnote'
+    host: 'web01.energyfussl.at',
+    user: 'schachnote',
+    password: '0jsLgHpA05rWlA25',
+    database: 'schachnote'
 })
 connection.connect()
 
@@ -33,7 +33,6 @@ let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2018-04-11'}
 })*/
 
 app.get('/notenmanagement/getKlasse/:getClassID', function(req, res){
-    let searchClass = {year: parseInt(req.params.getClass.substring(0,1)), label: req.params.getClass.substring(1)}  
     let sqlQuery = 'select Vorname, Nachname, SID from Schueler where KID =' + req.params.getClassID + ';'
     console.log('test')
     connection.query(sqlQuery, function(error, results, fields){
@@ -140,6 +139,7 @@ function addSubject(newSubject){
     })
 }
 function addMark(newMark){
+
     let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
     sqlQuery+='(select SID from Schueler where Vorname = "' + newMark.firstname + '" and Nachname = "' + newMark.lastname + '")';
     sqlQuery+=', (select TID from Tests where FID = '

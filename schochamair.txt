@@ -1,5 +1,5 @@
-Datenbankname: lfriedl_schachnote
-Datenbankbenutzername: lfrie_schachnote
-Passwort: Qeyv%604
-Server: web02.energyfussl.at
+Benutzername: schachnote
+Datenbankname: schachnote
+Passwort: 0jsLgHpA05rWlA25
+Server: web01.energyfussl.at
 Port: 3306

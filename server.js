@@ -45,10 +45,24 @@ app.get('/notenmanagement/getKlasse/:getClassID', function(req, res){
         }
     })
 })
-app.get('/notenmanagement/getSchueler/:getStudentID', function(req, res){
+app.get('/notenmanagement/getSchueler/getNoten/:getStudentID', function(req, res){
     let sqlQuery = 'select Tests.Datum, Faecher.Bezeichnung, Noten.Note, Noten.Kommentar from'
     sqlQuery+= '(((Schueler join Noten on Schueler.SID = Noten.SID) join Tests on Tests.TID = Noten.TID) join Faecher on Tests.FID = Faecher.FID)'
-    sqlQuery+= ' where SID = ' + req.params.getStudentID + ';'
+    sqlQuery+= ' where Schueler.SID = ' + req.params.getStudentID + ';'
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.send(error)
+        }else{
+            console.log(results)
+            res.status(200).send(results)
+        }
+    })
+})
+app.get('/notenmanagement/getSchueler/getFaecher/:getStudentID', function(req, res){
+    let sqlQuery = 'select distinct Faecher.Bezeichnung from'
+    sqlQuery+= '(((Schueler join Noten on Schueler.SID = Noten.SID) join Tests on Tests.TID = Noten.TID) join Faecher on Tests.FID = Faecher.FID)'
+    sqlQuery+= ' where Schueler.SID = ' + req.params.getStudentID + ';'
     connection.query(sqlQuery, function(error, results, fields){
         if(error){
             console.log(error)

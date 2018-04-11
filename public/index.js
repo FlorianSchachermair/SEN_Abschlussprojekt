@@ -1,6 +1,21 @@
 console.log('hallo')
+
+// =====================================
+
+let allClasses
+
+// =====================================
+
+
+
 getAllMarksFromSingleStudent()
 let responseData
+
+getAllData()
+
+showAllClassDropdown()
+
+// ============ GET-Methoden ===========
 
 function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     var httpReq = new XMLHttpRequest();
@@ -38,6 +53,12 @@ function getAllMarksFromSingleStudent(){      // Vorest einmal alle Daten vom Se
     httpReq.send()
 }
 
+function getAllClasses(){
+    
+}
+
+// ======================================
+
 function showResponse(responseObj){
 
     console.log(responseObj)
@@ -67,4 +88,76 @@ function showResponse(responseObj){
         }
         httpReq.send()
     */
+}
+
+function showAllClassDropdown(){
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("GET", "/notenmanagement/getClass");
+    httpReq.onload = function () {
+        if (this.status == 200) {
+            allClasses = JSON.parse(this.responseText)
+
+            console.log(allClasses)
+
+            let htmlStr = '<select name="select_class" onChange="classDropdownClicked(this)">'
+            htmlStr += '<option value="none">(Klasse wählen)</option>'
+            for(i=0; i < allClasses.length; i++){
+                let currentClass = ''+allClasses[i].Jahrgang+allClasses[i].Bezeichnung
+                htmlStr += '<option value="'+currentClass+'">'+currentClass+'</option>'
+            }
+            htmlStr += '</select>'
+            
+            document.getElementById('home_page_1').innerHTML = htmlStr
+        } else {
+            console.log('Response code ' + this.status)
+        }
+    };
+    httpReq.onerror = function () {
+        console.log("Error ")
+    };
+    httpReq.send()  
+}
+
+function classDropdownClicked(el){
+    if(el.value == 'none'){
+        return
+    }
+
+    let className = el.value
+    console.log(className + ' selected from dropdown')
+    showClass(className)
+}
+
+function showClass(className){
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("GET", "/notenmanagement/getKlasse/"+className);
+    httpReq.onload = function () {
+        if (this.status == 200) {
+            wholeClass = JSON.parse(this.responseText)
+            console.log('showClass '+className+':\n')
+            console.log(wholeClass)
+
+            let htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
+
+            for (let i = 0; i < wholeClass.length; i++) {
+                htmlStr += '<tr data-href="onClick(this)">' +
+                    '<td>' + wholeClass[i].Vorname + '</td>' +
+                    '<td>' + wholeClass[i].Nachname + '</td>' +
+                    '</tr>'
+            }
+            htmlStr += '</table>'
+
+            document.getElementById('home_page_2').innerHTML = htmlStr
+        } else {
+            console.log('Response code ' + this.status)
+        }
+    };
+    httpReq.onerror = function () {
+        console.log("Error ")
+    };
+    httpReq.send() 
+}
+
+function onClick(el){
+    console.log('onClick')
 }

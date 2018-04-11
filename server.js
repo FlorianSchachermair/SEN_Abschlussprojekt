@@ -10,10 +10,10 @@ app.listen(3000,function(){
     console.log('server running and listening on port 3000')
 })
 let connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'Notenmanagement'
+    host: 'web02.energyfussl.at',
+    user: 'lfrie_schachnote',
+    password: 'Qeyv%604',
+    database: 'lfriedl_schachnote'
 })
 connection.connect()
 
@@ -61,7 +61,6 @@ app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
         }
     })
 })
-
 
 
 function addStudent(student){

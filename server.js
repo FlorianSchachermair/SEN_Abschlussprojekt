@@ -34,7 +34,7 @@ let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2018-04-11'}
 
 app.get('/notenmanagement/getKlasse/:getClassID', function(req, res){
     let searchClass = {year: parseInt(req.params.getClass.substring(0,1)), label: req.params.getClass.substring(1)}  
-    let sqlQuery = 'select Vorname, Nachname from Schueler where KID =' + req.params.getClassID + ';'
+    let sqlQuery = 'select Vorname, Nachname, SID from Schueler where KID =' + req.params.getClassID + ';'
     console.log('test')
     connection.query(sqlQuery, function(error, results, fields){
         if(error){
@@ -74,7 +74,16 @@ app.get('/notenmanagement/getKlassen', function(req, res){
 })
 app.post('/notenmanagement/addSchueler', function(req, res){
     addStudent(req.body)
-    res.send(getStudent(req.body))
+    let sqlQuery = 'select * from Schueler where Vorname = "' + req.body.firstname + '" and "' + req.body.lastname + '";'
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.send(error)
+        }else{
+            console.log(results)
+            res.status(200).send(results)
+        }
+    })
 })
 function addClass(addClass){
     let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
@@ -90,9 +99,7 @@ function addClass(addClass){
     })
 }
 function addStudent(student){
-    let sqlQuery = 'insert into Schueler(Vorname, Nachname, KID) values("' + student.firstname + '", "' + student.lastname + '", '
-    sqlQuery+= '(select KID from Klassen where Bezeichnung="' + student.classLabel + '" ' 
-    sqlQuery+= 'and Jahrgang=' + student.year +'));'
+    let sqlQuery = 'insert into Schueler(Vorname, Nachname, KID) values("' + student.firstname + '", "' + student.lastname + '", ' + student.KID +  ');'
     connection.query(sqlQuery, function(error, results, fields){
             if(error){
                 console.log(error)

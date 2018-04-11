@@ -1,5 +1,5 @@
 console.log('hallo')
-getAllMarksFromSingleStudent()
+//getAllMarksFromSingleStudent()
 let responseData
 
 function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
@@ -67,4 +67,20 @@ function showResponse(responseObj){
         }
         httpReq.send()
     */
+}
+//addStudent({firstname : 'Max', lastname: 'Mustermann', KID: 1})
+function addStudent(student){
+    var httpReq = new XMLHttpRequest();
+    httpReq.open('POST', '/notenmanagement/addSchueler')
+    httpReq.setRequestHeader("Content-Type", "application/json")
+    httpReq.onload = function () {
+    if(this.status==200) {
+        let response = JSON.parse(this.responseText)
+    } else {
+        console.log('Response code'+ this.status)
+    }};
+    httpReq.onerror = function () {
+        console.log("Error ")
+    }
+    httpReq.send(JSON.stringify(student))
 }

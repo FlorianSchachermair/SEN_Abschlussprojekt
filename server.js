@@ -22,18 +22,6 @@ let newStudent = {firstname:'Florian', lastname:'Schachermair', year:5, classLab
 let newSubject = {label:'FSST'}
 let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2017-03-01'}
 //addMark({firstname: 'Florian', lastname:'Schachermair', subject: 'FSST', classLabel:'AHELS', year:5, mark: 2, comment:'-'})
-function addClass(addClass){
-    let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
-    
-    connection.query(sqlQuery, function(error, results, fields){
-            if(error){
-                console.log(error)
-                return error
-            }else{
-                return true
-            }
-    })
-}
 app.get('/notenmanagement/getKlasse/:getClass', function(req, res){
     let searchClass = {year: parseInt(req.params.getClass.substring(0,1)), label: req.params.getClass.substring(1)}  
     let sqlQuery = 'select Vorname, Nachname from Schueler where KID = (select KID from Klassen where Jahrgang = ' + searchClass.year + ' and Bezeichnung = "' + searchClass.label + '");'
@@ -61,8 +49,31 @@ app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
         }
     })
 })
-
-
+app.get('/notenmanagement/getKlassen', function(req, res){
+    let sqlQuery = 'select * from Klassen'
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.send(error)
+        }else{
+            console.log(results)
+            res.status(200).send(results)
+        }
+    })
+})
+function addClass(addClass){
+    let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
+    
+    connection.query(sqlQuery, function(error, results, fields){
+            if(error){
+                console.log(error)
+                return error
+            }else{
+                console.log('test')
+                return true
+            }
+    })
+}
 function addStudent(student){
     let sqlQuery = 'insert into Schueler(Vorname, Nachname, KID) values("' + student.firstname + '", "' + student.lastname + '", '
     sqlQuery+= '(select KID from Klassen where Bezeichnung="' + student.classLabel + '" ' 

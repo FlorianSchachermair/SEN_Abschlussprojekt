@@ -32,9 +32,9 @@ let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2018-04-11'}
     }
 })*/
 
-app.get('/notenmanagement/getKlasse/:getClass', function(req, res){
+app.get('/notenmanagement/getKlasse/:getClassID', function(req, res){
     let searchClass = {year: parseInt(req.params.getClass.substring(0,1)), label: req.params.getClass.substring(1)}  
-    let sqlQuery = 'select Vorname, Nachname from Schueler where KID = (select KID from Klassen where Jahrgang = ' + searchClass.year + ' and Bezeichnung = "' + searchClass.label + '");'
+    let sqlQuery = 'select Vorname, Nachname from Schueler where KID =' + req.params.getClassID + ';'
     console.log('test')
     connection.query(sqlQuery, function(error, results, fields){
         if(error){
@@ -46,12 +46,10 @@ app.get('/notenmanagement/getKlasse/:getClass', function(req, res){
         }
     })
 })
-app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
-    let searchStudent = {firstname: req.params.getStudent.split(' ')[0], lastname: req.params.getStudent.split(' ')[1]}
-    console.log(searchStudent)
+app.get('/notenmanagement/getSchueler/:getStudentID', function(req, res){
     let sqlQuery = 'select Tests.Datum, Faecher.Bezeichnung, Noten.Note, Noten.Kommentar from'
     sqlQuery+= '(((Schueler join Noten on Schueler.SID = Noten.SID) join Tests on Tests.TID = Noten.TID) join Faecher on Tests.FID = Faecher.FID)'
-    sqlQuery+= ' where Vorname = "' + searchStudent.firstname + '" and Nachname = "' + searchStudent.lastname + '";'
+    sqlQuery+= ' where SID = ' + req.params.getStudentID + ';'
     connection.query(sqlQuery, function(error, results, fields){
         if(error){
             console.log(error)

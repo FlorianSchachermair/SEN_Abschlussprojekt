@@ -93,7 +93,7 @@ function showResponse(responseObj){
 
 function showAllClassDropdown(){
     var httpReq = new XMLHttpRequest();
-    httpReq.open("GET", "/notenmanagement/getClass");
+    httpReq.open("GET", "/notenmanagement/getKlassen");
     httpReq.onload = function () {
         if (this.status == 200) {
             allClasses = JSON.parse(this.responseText)
@@ -103,8 +103,7 @@ function showAllClassDropdown(){
             let htmlStr = '<select name="select_class" onChange="classDropdownClicked(this)">'
             htmlStr += '<option value="none">(Klasse wählen)</option>'
             for(i=0; i < allClasses.length; i++){
-                let currentClass = ''+allClasses[i].Jahrgang+allClasses[i].Bezeichnung
-                htmlStr += '<option value="'+currentClass+'">'+currentClass+'</option>'
+                htmlStr += '<option value="'+allClasses[i].KID+'">'+allClasses[i].Jahrgang+allClasses[i].Bezeichnung+'</option>'
             }
             htmlStr += '</select>'
             
@@ -124,24 +123,24 @@ function classDropdownClicked(el){
         return
     }
 
-    let className = el.value
-    console.log(className + ' selected from dropdown')
-    showClass(className)
+    let classId = el.value
+    console.log('ClassID ' + classId + ' selected from dropdown')
+    showClass(classId)
 }
 
-function showClass(className){
+function showClass(classId){
     var httpReq = new XMLHttpRequest();
-    httpReq.open("GET", "/notenmanagement/getKlasse/"+className);
+    httpReq.open("GET", "/notenmanagement/getKlasse/"+classId);
     httpReq.onload = function () {
         if (this.status == 200) {
             wholeClass = JSON.parse(this.responseText)
-            console.log('showClass '+className+':\n')
+            console.log('showClass with ID '+classId+':\n')
             console.log(wholeClass)
 
             let htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
 
             for (let i = 0; i < wholeClass.length; i++) {
-                htmlStr += '<tr data-href="onClick(this)">' +
+                htmlStr += '<tr class="tablerow" onclick="onClick(this)">' +
                     '<td>' + wholeClass[i].Vorname + '</td>' +
                     '<td>' + wholeClass[i].Nachname + '</td>' +
                     '</tr>'

@@ -49,7 +49,7 @@ app.get('/notenmanagement/getSchueler/:getStudent', function(req, res){
         }
     })
 })
-app.get('/notenmanagement/getKlassen', function(req, res){
+app.get('/notenmanagement/getClass', function(req, res){
     let sqlQuery = 'select * from Klassen'
     connection.query(sqlQuery, function(error, results, fields){
         if(error){

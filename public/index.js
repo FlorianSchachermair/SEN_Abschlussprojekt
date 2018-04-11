@@ -9,6 +9,7 @@ let allClasses
 
 
 getAllMarksFromSingleStudent()
+
 let responseData
 
 getAllData()

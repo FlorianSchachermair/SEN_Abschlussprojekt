@@ -138,8 +138,14 @@ function addSubject(newSubject){
             }
     })
 }
+//Falls ein Schüler gefehlt hat einfach nichts eintragen
 function addMark(newMark){
-
+    let test = false
+    for(let i=1; i<5; i++){
+        if(newMark == i){
+            
+        }
+    }
     let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
     sqlQuery+='(select SID from Schueler where Vorname = "' + newMark.firstname + '" and Nachname = "' + newMark.lastname + '")';
     sqlQuery+=', (select TID from Tests where FID = '

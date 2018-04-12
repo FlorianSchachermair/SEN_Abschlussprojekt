@@ -140,7 +140,7 @@ function showClass(classId){
             let htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
 
             for (let i = 0; i < wholeClass.length; i++) {
-                htmlStr += '<tr class="tablerow" onclick="onClick(this)">' +
+                htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
                     '<td>' + wholeClass[i].Vorname + '</td>' +
                     '<td>' + wholeClass[i].Nachname + '</td>' +
                     '</tr>'
@@ -158,6 +158,8 @@ function showClass(classId){
     httpReq.send() 
 }
 
-function onClick(el){
-    console.log('onClick')
+function onClick(sid){
+    console.log('onClick on SID '+sid)
+
+    window.open('student_page.html?sid='+sid,'_self')
 }

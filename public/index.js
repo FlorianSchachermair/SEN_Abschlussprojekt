@@ -120,6 +120,8 @@ function showAllClassDropdown(){
 
 function classDropdownClicked(el){
     if(el.value == 'none'){
+        let htmlStr = ''
+        document.getElementById('home_page_2').innerHTML = htmlStr
         return
     }
 
@@ -137,15 +139,23 @@ function showClass(classId){
             console.log('showClass with ID '+classId+':\n')
             console.log(wholeClass)
 
-            let htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
+            let htmlStr
 
-            for (let i = 0; i < wholeClass.length; i++) {
-                htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
-                    '<td>' + wholeClass[i].Vorname + '</td>' +
-                    '<td>' + wholeClass[i].Nachname + '</td>' +
-                    '</tr>'
+            if(wholeClass.length == 0){
+                htmlStr = '<p>Keine Daten vorhanden</p>'
+            } else {
+                htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
+
+                for (let i = 0; i < wholeClass.length; i++) {
+                    htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
+                        '<td>' + wholeClass[i].Vorname + '</td>' +
+                        '<td>' + wholeClass[i].Nachname + '</td>' +
+                        '</tr>'
+                }
+                htmlStr += '</table>'
+
+                htmlStr += 
             }
-            htmlStr += '</table>'
 
             document.getElementById('home_page_2').innerHTML = htmlStr
         } else {

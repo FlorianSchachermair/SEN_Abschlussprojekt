@@ -4,10 +4,11 @@ var urlParams = new URLSearchParams(window.location.search)
 
 let sid = urlParams.get('sid')
 getSubjects()
-getStudent()
+getGrades()
 console.log(sid)
 
-function getStudent(){
+
+function getGrades(){
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getSchueler/getNoten/"+sid);
     httpReq.onload = function () {

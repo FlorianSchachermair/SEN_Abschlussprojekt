@@ -12,6 +12,8 @@ getAllMarksFromSingleStudent()
 
 let responseData
 
+let currentClassID = -1
+
 getAllData()
 
 showAllClassDropdown()
@@ -122,15 +124,20 @@ function classDropdownClicked(el){
     if(el.value == 'none'){
         let htmlStr = ''
         document.getElementById('home_page_2').innerHTML = htmlStr
+        document.getElementById('home_page_3').innerHTML = htmlStr
         return
     }
 
     let classId = el.value
     console.log('ClassID ' + classId + ' selected from dropdown')
+    currentClassID = classId
     showClass(classId)
 }
 
 function showClass(classId){
+    if(classId < 0){
+        return
+    }
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getKlasse/"+classId);
     httpReq.onload = function () {
@@ -142,9 +149,10 @@ function showClass(classId){
             let htmlStr
 
             if(wholeClass.length == 0){
-                htmlStr = '<p>Keine Daten vorhanden</p>'
+                htmlStr = '<p><i>In dieser Klasse sind keine Schüler vorhanden<\i></p>'
             } else {
-                htmlStr = '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
+                htmlStr = '<p>Schüler auswählen:</p>'
+                htmlStr += '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
 
                 for (let i = 0; i < wholeClass.length; i++) {
                     htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
@@ -153,11 +161,12 @@ function showClass(classId){
                         '</tr>'
                 }
                 htmlStr += '</table>'
-
-                htmlStr += 
             }
-
             document.getElementById('home_page_2').innerHTML = htmlStr
+
+            htmlStr = '<button onclick="addClicked(this)">Schüler zu dieser Klasse hinzufügen</button>'
+
+            document.getElementById('home_page_3').innerHTML = htmlStr
         } else {
             console.log('Response code ' + this.status)
         }
@@ -172,4 +181,55 @@ function onClick(sid){
     console.log('onClick on SID '+sid)
 
     window.open('student_page.html?sid='+sid,'_self')
+}
+
+function addClicked(el){
+    console.log('ADD clicked on ClassID: '+currentClassID)
+
+    let htmlStr = '<form onsubmit="addSubmited(this); return false;">'
+        htmlStr += 'Vorname:<br>'
+        htmlStr += '<input type="text" name="firstname" value=""><br> Nachname:<br>'
+        htmlStr += '<input type="text" name="lastname" value=""><br><br>'
+        htmlStr += '<input type="submit" value="OK">'
+        htmlStr += '</form>'
+
+     document.getElementById('home_page_3').innerHTML = htmlStr
+}
+
+function addSubmited(formEl){
+    let newFirstname = formEl.elements.firstname.value
+    let newLastname = formEl.elements.lastname.value
+
+    console.log(newFirstname + ' ' + newLastname)
+
+    let newStudent = {
+        firstname: newFirstname,
+        lastname: newLastname,
+        KID: currentClassID
+    }
+
+    postStudent(newStudent)
+}
+
+function postStudent(student){
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("POST", "/notenmanagement/addSchueler");
+    httpReq.setRequestHeader("Content-Type", "application/json");
+
+    httpReq.onload = function () {
+        if(this.status==200) {
+            let response = JSON.parse(this.responseText)
+            console.log('postStudent response:')
+            console.log(response)
+            showClass(currentClassID)
+        } else {
+            console.log('Response code '+ this.status)
+        }
+    };
+
+    httpReq.onerror = function () {
+        console.log("Error ")
+    };
+
+    httpReq.send(JSON.stringify(student))
 }

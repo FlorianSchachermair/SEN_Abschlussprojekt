@@ -200,6 +200,10 @@ function addSubmited(formEl){
     let newFirstname = formEl.elements.firstname.value
     let newLastname = formEl.elements.lastname.value
 
+    if(newFirstname == '' || newLastname == ''){
+        return
+    }
+
     console.log(newFirstname + ' ' + newLastname)
 
     let newStudent = {

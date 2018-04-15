@@ -157,7 +157,7 @@ function addMark(newMark){
     let test = false
     for(let i=1; i<5; i++){
         if(newMark == i){
-            
+            test = true
         }
     }
     let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
@@ -165,7 +165,12 @@ function addMark(newMark){
     sqlQuery+=', (select TID from Tests where FID = '
     sqlQuery+='(select FID from Faecher where Bezeichnung = "' + newMark.subject +'") and KID = '
     sqlQuery+='('  + getClassQuery(newMark) + ') and Datum = "' + newMark.date + '")'
-    sqlQuery+=', ' + newMark.mark + ', "' + newMark.comment + '");'
+    if(test){
+        sqlQuery+=', ' + newMark.mark + ', "' + newMark.comment + '");'
+    }else{
+        sqlQuery+=', -1, "gefehlt");'
+    }
+
     console.log(sqlQuery)
     connection.query(sqlQuery, function(error, results, fields){
             if(error){

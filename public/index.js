@@ -121,22 +121,15 @@ function showAllClassDropdown(){
 
 function classDropdownClicked(el){
     if(el.value == 'none'){
-        let htmlStr = ''
-        document.getElementById('home_page_2').innerHTML = htmlStr
-        document.getElementById('home_page_3').innerHTML = htmlStr
         return
     }
 
     let classId = el.value
     console.log('ClassID ' + classId + ' selected from dropdown')
-    currentClassID = classId
     showClass(classId)
 }
 
 function showClass(classId){
-    if(classId < 0){
-        return
-    }
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getKlasse/"+classId);
     httpReq.onload = function () {

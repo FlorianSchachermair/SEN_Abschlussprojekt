@@ -4,10 +4,11 @@ var urlParams = new URLSearchParams(window.location.search)
 
 let sid = urlParams.get('sid')
 getSubjects()
-getStudent()
+getGrades()
 console.log(sid)
 
-function getStudent(){
+
+function getGrades(){
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getSchueler/getNoten/"+sid);
     httpReq.onload = function () {
@@ -28,8 +29,13 @@ function getSubjects() {
     httpReq.open("GET", "/notenmanagement/getSchueler/getFaecher/"+sid);
     httpReq.onload = function () {
         if (this.status == 200) {
+            let subjects = JSON.parse(this.responseText)
+
+            if(subjects.length == 0){
+                subjects = -1
+            }
             
-            createSubjectTables(JSON.parse(this.responseText))
+            createSubjectTables(subjects)
         } else {
             console.log('Response code ' + this.status)
         }
@@ -40,6 +46,12 @@ function getSubjects() {
     httpReq.send() 
 }
 function createSubjectTables(subjects){
+    if(subjects == -1){
+        let htmlStr = '<p>Keine Daten für diesen Schüler vorhanden</p>'
+        document.getElementById('gradeTables').innerHTML = htmlStr
+        return
+    }
+
     subjects.forEach(element => {
         let htmlTable = '<table class = "subjectTable" id=' + element.Bezeichnung + '>'
         htmlTable+='<caption>' + element.Bezeichnung + '</caption>'

@@ -16,11 +16,14 @@ let connection = mysql.createConnection({
     database: 'schachnote'
 })
 connection.connect()
-
+/*
 let newClass = {year:5, label:'AHELS'}
 let newStudent = {firstname:'Florian', lastname:'Schachermair', year:5, classLabel:'AHELS'}
 let newSubject = {label:'FSST'}
 let newTest = {subject:'FSST', classLabel:'AHELS', year:5, date:'2018-04-11'}
+*/
+
+
 //addTest(newTest)
 //addMark({firstname: 'Florian', lastname:'Schachermair', subject: 'FSST', classLabel:'AHELS', year:5, mark: 3, comment:'-', date:'2018-04-11'})
 /*connection.query('delete from Tests where Datum = "2018-04-11";' ,function(error, results, fields){
@@ -63,6 +66,18 @@ app.get('/notenmanagement/getSchueler/getFaecher/:getStudentID', function(req, r
     let sqlQuery = 'select distinct Faecher.Bezeichnung from'
     sqlQuery+= '(((Schueler join Noten on Schueler.SID = Noten.SID) join Tests on Tests.TID = Noten.TID) join Faecher on Tests.FID = Faecher.FID)'
     sqlQuery+= ' where Schueler.SID = ' + req.params.getStudentID + ';'
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.send(error)
+        }else{
+            console.log(results)
+            res.status(200).send(results)
+        }
+    })
+})
+app.get('/notenmanagement/getSchueler/getFaecher', function(req, res){
+    let sqlQuery = 'select * from Faecher'
     connection.query(sqlQuery, function(error, results, fields){
         if(error){
             console.log(error)
@@ -153,19 +168,27 @@ function addSubject(newSubject){
     })
 }
 //Falls ein Schüler gefehlt hat einfach nichts eintragen
+function addMarksForWholeTest(marks, TestID){
+    marks.forEach(element => {
+        addMark({SID: element.SID, TID: TestID, mark: element.mark, comment: element.comment})
+    });
+}
+
 function addMark(newMark){
     let test = false
     for(let i=1; i<5; i++){
-        if(newMark == i){
-            
+        if(newMark.mark == i){
+            test = true
         }
     }
+    if(!test){
+        newMark.comment = 'nicht Teilgenommen'
+    }
     let sqlQuery = 'insert into Noten(SID, TID, Note, Kommentar) values(';
-    sqlQuery+='(select SID from Schueler where Vorname = "' + newMark.firstname + '" and Nachname = "' + newMark.lastname + '")';
-    sqlQuery+=', (select TID from Tests where FID = '
-    sqlQuery+='(select FID from Faecher where Bezeichnung = "' + newMark.subject +'") and KID = '
-    sqlQuery+='('  + getClassQuery(newMark) + ') and Datum = "' + newMark.date + '")'
-    sqlQuery+=', ' + newMark.mark + ', "' + newMark.comment + '");'
+    sqlQuery+=' ' + newMark.SID
+    sqlQuery+=', ' + newMark.TID
+    sqlQuery+=', ' + newMark.mark 
+    sqlQuery+=', "' + newMark.comment + '");'
     console.log(sqlQuery)
     connection.query(sqlQuery, function(error, results, fields){
             if(error){

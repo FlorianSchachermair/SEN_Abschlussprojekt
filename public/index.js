@@ -1,4 +1,3 @@
-console.log('hallo')
 
 // =====================================
 
@@ -8,19 +7,19 @@ let allClasses
 
 
 
-getAllMarksFromSingleStudent()
+//getAllMarksFromSingleStudent()
 
 let responseData
 
 let currentClassID = -1
 
-getAllData()
+//getAllData()
 
 showAllClassDropdown()
-
+getSubjects()
 // ============ GET-Methoden ===========
 
-function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
+/*function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
     var httpReq = new XMLHttpRequest();
     httpReq.open("GET", "/notenmanagement/getKlasse/5AHELS");
     httpReq.onload = function () {
@@ -59,7 +58,7 @@ function getAllMarksFromSingleStudent(){      // Vorest einmal alle Daten vom Se
 function getAllClasses(){
     
 }
-
+*/
 // ======================================
 
 function showResponse(responseObj){
@@ -102,7 +101,7 @@ function showAllClassDropdown(){
 
             console.log(allClasses)
 
-            let htmlStr = '<select name="select_class" onChange="classDropdownClicked(this)">'
+            let htmlStr = '<select class="browser-default" name="select_class" onChange="classDropdownClicked(this)">'
             htmlStr += '<option value="none">(Klasse wählen)</option>'
             for(i=0; i < allClasses.length; i++){
                 htmlStr += '<option value="'+allClasses[i].KID+'">'+allClasses[i].Jahrgang+allClasses[i].Bezeichnung+'</option>'
@@ -152,7 +151,7 @@ function showClass(classId){
                 htmlStr = '<p><i>In dieser Klasse sind keine Schüler vorhanden<\i></p>'
             } else {
                 htmlStr = '<p>Schüler auswählen:</p>'
-                htmlStr += '<table> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
+                htmlStr += '<table class = "centered"> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
 
                 for (let i = 0; i < wholeClass.length; i++) {
                     htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
@@ -164,8 +163,11 @@ function showClass(classId){
             }
             document.getElementById('home_page_2').innerHTML = htmlStr
 
-            htmlStr = '<button onclick="addClicked(this)">Schüler zu dieser Klasse hinzufügen</button>'
-
+            htmlStr = '<button class="btn waves-effect waves-light" onclick="addClicked(this)">Schüler zu dieser Klasse hinzufügen</button>'
+            if(wholeClass.length != 0){
+                htmlStr += '<button class="btn waves-effect waves-light" onclick="addTestClicked()">Test Hinzufügen</button>'
+            }
+                        
             document.getElementById('home_page_3').innerHTML = htmlStr
         } else {
             console.log('Response code ' + this.status)
@@ -186,17 +188,17 @@ function onClick(sid){
 function addClicked(el){
     console.log('ADD clicked on ClassID: '+currentClassID)
 
-    let htmlStr = '<form onsubmit="addSubmited(this); return false;">'
+    let htmlStr = '<form onsubmit="addSubmitted(this); return false;">'
         htmlStr += 'Vorname:<br>'
         htmlStr += '<input type="text" name="firstname" value=""><br> Nachname:<br>'
         htmlStr += '<input type="text" name="lastname" value=""><br><br>'
-        htmlStr += '<input type="submit" value="OK">'
+        htmlStr += '<input class="btn waves-effect waves-light" type="submit" value="OK">'
         htmlStr += '</form>'
 
      document.getElementById('home_page_3').innerHTML = htmlStr
 }
 
-function addSubmited(formEl){
+function addSubmitted(formEl){
     let newFirstname = formEl.elements.firstname.value
     let newLastname = formEl.elements.lastname.value
 
@@ -237,3 +239,62 @@ function postStudent(student){
 
     httpReq.send(JSON.stringify(student))
 }
+let allSubjects
+function getSubjects() {
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("GET", "/notenmanagement/getSchueler/getFaecher")
+    httpReq.onload = function () {
+        if (this.status == 200) {
+            allSubjects = JSON.parse(this.responseText)
+        } else {
+            console.log('Response code ' + this.status)
+        }
+    };
+    httpReq.onerror = function () {
+        console.log("Error ")
+    };
+    httpReq.send() 
+}
+function addTestClicked(){
+    let htmlStr
+    htmlStr = '<form onsubmit="submitTest(this); return false;">'
+    htmlStr += '<input type="text" class="datepicker">'
+    htmlStr = '<select class="browser-default" name="selectSubject" ">'
+    htmlStr += '<option value="none">Fach wählen</option>'
+
+    for(i=0; i < allSubjects.length; i++){
+        htmlStr += '<option value="'+allSubjects[i].FID+'">'+allSubjects[i].Bezeichnung +'</option>'
+    }
+    htmlStr += '</select>'
+    htmlStr += '<input type="text" class="datepicker" id="datepickerTest">'
+
+    htmlStr += '<table class = "centered"> <tr> <th>Vorname</th> <th>Nachname</th> <th>Note</th> <th>Kommentar</th> </tr>'
+    for (let i = 0; i < wholeClass.length; i++) {
+        htmlStr += '<tr>' 
+        htmlStr += '<td>' + wholeClass[i].Vorname + '</td>' 
+        htmlStr += '<td>' + wholeClass[i].Nachname + '</td>' 
+        htmlStr += '<td> <input type="number" name="grade' + i + '"></td>' 
+        htmlStr += '<td> <input type="text" name="comment' + i + '"></td>'
+        htmlStr +='</tr>'
+    }
+    htmlStr += '</table>'
+    htmlStr += '<input class="btn waves-effect waves-light" type="submit" value="Bestätigen">'
+    htmlStr += '</form>'
+    document.getElementById('home_page_2').innerHTML = htmlStr
+
+}
+function submitTest(){
+    console.log('test')
+}
+function postTest(){
+    //{FID:, KID:, date:, marks[{SID:, mark:, comment:}, {}...] }
+
+}
+/*
+    let htmlStr = '<form onsubmit="addSubmitted(this); return false;">'
+        htmlStr += 'Vorname:<br>'
+        htmlStr += '<input type="text" name="firstname" value=""><br> Nachname:<br>'
+        htmlStr += '<input type="text" name="lastname" value=""><br><br>'
+        htmlStr += '<input type="submit" value="OK">'
+        htmlStr += '</form>'
+*/

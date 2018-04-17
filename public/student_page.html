@@ -43,8 +43,8 @@
 
 <body>
 
-    <form action="/index.html">
-        <input type="submit" value="zurück zur Startseite" />
+    <form onsubmit="back_clicked(this); return false">
+        <input type="submit" value="zurück" />
     </form>
 
     <div id=gradeTables></div>

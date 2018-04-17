@@ -6,6 +6,15 @@ let allClasses
 // =====================================
 
 
+let urlStr = window.location.href;
+
+var urlParams = new URLSearchParams(window.location.search)
+
+if(urlStr.indexOf('?') != -1){
+    let prevClassID = urlParams.get('kid')
+    showClass(prevClassID)
+}
+
 
 //getAllMarksFromSingleStudent()
 
@@ -17,49 +26,7 @@ let currentClassID = -1
 
 showAllClassDropdown()
 getSubjects()
-// ============ GET-Methoden ===========
 
-/*function getAllData(){      // Vorest einmal alle Daten vom Server abrufen
-    var httpReq = new XMLHttpRequest();
-    httpReq.open("GET", "/notenmanagement/getKlasse/5AHELS");
-    httpReq.onload = function () {
-        if (this.status == 200) {
-            responseData = JSON.parse(this.responseText)
-            // showResponse(responseData)
-            console.log(responseData)
-        } else {
-            console.log('Response code ' + this.status)
-        }
-    };
-    httpReq.onerror = function () {
-        console.log("Error ")
-    };
-    httpReq.send()
-}
-
-function getAllMarksFromSingleStudent(){      // Vorest einmal alle Daten vom Server abrufen
-    var httpReq = new XMLHttpRequest();
-    httpReq.open("GET", "/notenmanagement/getSchueler/Florian Schachermair");
-    httpReq.onload = function () {
-        if (this.status == 200) {
-            responseData = JSON.parse(this.responseText)
-            // showResponse(responseData)
-            console.log(responseData)
-        } else {
-            console.log('Response code ' + this.status)
-        }
-    };
-    httpReq.onerror = function () {
-        console.log("Error ")
-    };
-    httpReq.send()
-}
-
-function getAllClasses(){
-    
-}
-*/
-// ======================================
 
 function showResponse(responseObj){
 
@@ -121,6 +88,8 @@ function showAllClassDropdown(){
 
 function classDropdownClicked(el){
     if(el.value == 'none'){
+        document.getElementById('home_page_2').innerHTML = ''   // wenn "Klasse wählen" ausgewählt, wird nichts angezeigt
+        document.getElementById('home_page_3').innerHTML = ''
         return
     }
 
@@ -136,6 +105,7 @@ function showClass(classId){
         if (this.status == 200) {
             wholeClass = JSON.parse(this.responseText)
             console.log('showClass with ID '+classId+':\n')
+            currentClassID = classId
             console.log(wholeClass)
 
             let htmlStr
@@ -175,7 +145,9 @@ function showClass(classId){
 function onClick(sid){
     console.log('onClick on SID '+sid)
 
-    window.open('student_page.html?sid='+sid,'_self')
+    console.log(currentClassID)
+
+    window.open('student_page.html?sid='+sid+'&kid='+currentClassID,'_self')
 }
 
 function addClicked(el){

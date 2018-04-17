@@ -3,9 +3,11 @@ console.log('student_page.html')
 var urlParams = new URLSearchParams(window.location.search)
 
 let sid = urlParams.get('sid')
+let kid = urlParams.get('kid')
 getSubjects()
 getGrades()
 console.log(sid)
+console.log(kid)
 
 
 function getGrades(){
@@ -68,4 +70,8 @@ function addGradesToTables(grades){
         htmlTableContent += '</tr>'
         document.getElementById(element.Bezeichnung).getElementsByTagName('tbody')[0].innerHTML += htmlTableContent
     });
+}
+
+function back_clicked(el){
+    window.open('index.html'+'?kid='+kid,'_self')
 }

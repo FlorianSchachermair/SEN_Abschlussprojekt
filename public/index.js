@@ -147,7 +147,7 @@ function showClass(classId){
                 htmlStr += '<table class = "centered"> <tr> <th>Vorname</th> <th>Nachname</th> </tr>'
 
                 for (let i = 0; i < wholeClass.length; i++) {
-                    htmlStr += '<tr class="tablerow" onclick="onClick('+wholeClass[i].SID+')">' +
+                    htmlStr += '<tr style="cursor: pointer;" onclick="onClick('+wholeClass[i].SID+')">' +
                         '<td>' + wholeClass[i].Vorname + '</td>' +
                         '<td>' + wholeClass[i].Nachname + '</td>' +
                         '</tr>'

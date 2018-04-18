@@ -249,25 +249,33 @@ function getSubjects() {
     httpReq.send() 
 }
 function addTestClicked(){
+    let curDate = new Date()
+    let monthString = ''
+    if(curDate.getMonth() + 1 <= 9){
+        monthString += 0
+    }
+    monthString += curDate.getMonth()+1
+    let minDateString = "" +  curDate.getFullYear() + "-" + monthString + "-" + curDate.getDate()
+    console.log(minDateString)
     let htmlStr
     htmlStr = '<form onsubmit="submitTest(this); return false;">'
-    htmlStr += '<input type="text" class="datepicker">'
-    htmlStr = '<select class="browser-default" name="selectSubject" ">'
-    htmlStr += '<option value="none">Fach wählen</option>'
+    htmlStr += '<input type="text" id="type" value="Test">'
+    htmlStr += '<select id="subject" class="browser-default">'
+    htmlStr += '<option value="null">Fach wählen</option>'
 
     for(i=0; i < allSubjects.length; i++){
         htmlStr += '<option value="'+allSubjects[i].FID+'">'+allSubjects[i].Bezeichnung +'</option>'
     }
     htmlStr += '</select>'
-    htmlStr += '<input type="text" class="datepicker" id="datepickerTest">'
+    htmlStr += '<input type="date" class="datepicker" id="date" max="' + minDateString +  '">'
 
     htmlStr += '<table class = "centered"> <tr> <th>Vorname</th> <th>Nachname</th> <th>Note</th> <th>Kommentar</th> </tr>'
     for (let i = 0; i < wholeClass.length; i++) {
         htmlStr += '<tr>' 
         htmlStr += '<td>' + wholeClass[i].Vorname + '</td>' 
         htmlStr += '<td>' + wholeClass[i].Nachname + '</td>' 
-        htmlStr += '<td> <input type="number" name="grade' + i + '"></td>' 
-        htmlStr += '<td> <input type="text" name="comment' + i + '"></td>'
+        htmlStr += '<td> <input type="number" id="grade' + i + '" min = "1" max = "5"></td>' 
+        htmlStr += '<td> <input type="text" id="comment' + i + '"></td>'
         htmlStr +='</tr>'
     }
     htmlStr += '</table>'
@@ -276,8 +284,15 @@ function addTestClicked(){
     document.getElementById('home_page_2').innerHTML = htmlStr
 
 }
-function submitTest(){
-    console.log('test')
+function submitTest(formEl){
+    console.log(formEl.elements.namedItem('type').value)
+    console.log(formEl.elements.namedItem('grade1').value)
+    //console.log(formEl.elements.namedItem('comment1').value)
+    console.log(formEl.elements.namedItem('subject').value)
+    if(formEl.elements.namedItem('subject').value!='null'){
+    let test = {date:formEl.elements.namedItem('date').value, type:formEl.elements.namedItem('type').value,subject:allSubjects[formEl.elements.namedItem('subject').value-1].FID}
+    }
+    //console.log(test)
 }
 function postTest(){
     //{FID:, KID:, date:, marks[{SID:, mark:, comment:}, {}...] }

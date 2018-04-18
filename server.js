@@ -113,6 +113,9 @@ app.post('/notenmanagement/addSchueler', function(req, res){
         }
     })
 })
+app.post('/notenmanagement/addTest', function(req, res){
+    console.log(req.body)
+})
 function addClass(addClass){
     let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
     

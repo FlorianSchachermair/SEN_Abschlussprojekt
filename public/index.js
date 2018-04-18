@@ -285,10 +285,7 @@ function addTestClicked(){
 
 }
 function submitTest(formEl){
-    console.log(formEl.elements.namedItem('type').value)
-    console.log(formEl.elements.namedItem('grade1').value)
-    //console.log(formEl.elements.namedItem('comment1').value)
-    console.log(formEl.elements.namedItem('subject').value)
+
     if(formEl.elements.namedItem('subject').value!='null'){
     let test = {date:formEl.elements.namedItem('date').value, type:formEl.elements.namedItem('type').value,subject:allSubjects[formEl.elements.namedItem('subject').value-1].FID}
     }

@@ -125,6 +125,7 @@ function classDropdownClicked(el){
     }
 
     let classId = el.value
+    currentClassID = classId
     console.log('ClassID ' + classId + ' selected from dropdown')
     showClass(classId)
 }
@@ -285,15 +286,38 @@ function addTestClicked(){
 
 }
 function submitTest(formEl){
-
+    let test
     if(formEl.elements.namedItem('subject').value!='null'){
-    let test = {date:formEl.elements.namedItem('date').value, type:formEl.elements.namedItem('type').value,subject:allSubjects[formEl.elements.namedItem('subject').value-1].FID}
+        test = {date:formEl.elements.namedItem('date').value, type:formEl.elements.namedItem('type').value,FID:allSubjects[formEl.elements.namedItem('subject').value-1].FID,KID: currentClassID}
+        console.log(test)
     }
-    //console.log(test)
+    let marks = []
+    for(let i = 0;i < wholeClass.length;i++){
+        marks[i] = {SID : wholeClass[i].SID, mark: formEl.elements.namedItem('grade' + i).value,comment: formEl.elements.namedItem('comment' + i).value}
+    }
+    postTest(test, marks)
 }
-function postTest(){
-    //{FID:, KID:, date:, marks[{SID:, mark:, comment:}, {}...] }
+function postTest(test, marks){
+    console.log(test)
+    var httpReq = new XMLHttpRequest();
+    httpReq.open("POST", "/notenmanagement/addTest");
+    httpReq.setRequestHeader("Content-Type", "application/json");
+    httpReq.onload = function () {
+        if(this.status==200) {
+            let response = JSON.parse(this.responseText)
+            console.log('postTest response:')
+            console.log(response)
+            showClass(currentClassID)
+        } else {
+            console.log('Response code '+ this.status)
+        }
+    };
 
+    httpReq.onerror = function () {
+        console.log("Error ")
+    };
+
+    httpReq.send(JSON.stringify({test: test, marks: marks}))
 }
 /*
     let htmlStr = '<form onsubmit="addSubmitted(this); return false;">'

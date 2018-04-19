@@ -115,7 +115,21 @@ app.post('/notenmanagement/addSchueler', function(req, res){
 })
 app.post('/notenmanagement/addTest', function(req, res){
     console.log(req.body)
+    console.log(req.body.test)
+    addTest(req.body.test)
+    let TestID= getTID(req.body.test)
+    console.log(TestID)
+    addMarks(req.body, TestID)
 })
+function addMarks(body,TestID){
+    let temp
+    console.log(TestID)
+    for(let i=0;i<body.marks.length; i++){
+        temp = body.marks[i]
+        addMark({SID: temp.SID, TID: TestID ,mark: temp.mark, comment: temp.comment})
+    }
+}
+
 function addClass(addClass){
     let sqlQuery = 'insert into Klassen(Jahrgang, Bezeichnung) values(' + addClass.year + ', "' + addClass.label + '");'
     
@@ -128,6 +142,23 @@ function addClass(addClass){
                 return true
             }
     })
+}
+function getTID(test){
+    let sqlQuery = 'select TID from Tests where FID=' + test.FID + ' and KID=' + test.KID + ' and Datum = "' + test.date +'"'
+    let returnTID
+    console.log(sqlQuery)
+    connection.query(sqlQuery, function(error, results, fields){
+        if(error){
+            console.log(error)
+            return error
+        }else{
+            console.log(results)
+            returnTID = results
+            return results
+            
+        }
+    })
+    return returnTID
 }
 function addStudent(student){
     let sqlQuery = 'insert into Schueler(Vorname, Nachname, KID) values("' + student.firstname + '", "' + student.lastname + '", ' + student.KID +  ');'
@@ -144,20 +175,20 @@ function addStudent(student){
 
 function addTest(test){
     let sqlQuery = 'insert into Tests(FID, KID, Datum) values('
-    sqlQuery+='(select FID from Faecher where Bezeichnung ="' + test.subject + '"),'
-    sqlQuery+= '(' + getClassQuery(test) + '),'
+    sqlQuery+='' + test.FID + ','
+    sqlQuery+='' + test.KID+ ','
     sqlQuery+=  '"' + test.date + '");'
+    console.log(sqlQuery)
     connection.query(sqlQuery, function(error, results, fields){
             if(error){
                 console.log(error)
                 return error
             }else{
-                console.log('addTest successful!')
+                console.log(results)
                 return true
             }
     })
 }
-
 function addSubject(newSubject){
     let sqlQuery = 'insert into Faecher(Bezeichnung) values("' + newSubject.label + '");'
     connection.query(sqlQuery, function(error, results, fields){
